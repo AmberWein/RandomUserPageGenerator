@@ -17,18 +17,6 @@ function renderMainUser(user) {
   `;
 }
 
-async function generateUserPage() {
-  const users = await getRandomUsers();
-  const mainUser = users[0];
-  const friends = users.slice(1, 7);
-
-  const quote = await getKanyeQuote();
-
-  renderMainUser(mainUser);
-  renderFriends(friends);
-  renderQuote(quote);
-}
-
 function renderFriends(friends) {
   const friendsList = document.getElementById("friends-list");
   friendsList.innerHTML = "";
@@ -54,6 +42,50 @@ async function getKanyeQuote() {
 function renderQuote(quote) {
   const quoteElement = document.getElementById("quote");
   quoteElement.textContent = `"${quote}" - Kanye West`;
+}
+
+async function getRandomPokemon() {
+  const randomId = Math.floor(Math.random() * 1025) + 1;
+  const url = `https://pokeapi.co/api/v2/pokemon/${randomId}`;
+
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    return {
+      name: capitalize(data.name),
+      image: data.sprites.front_default
+    };
+  } catch (error) {
+    console.error("Error fetching Pokemon:", error);
+    return {
+      name: "Unknown",
+      image: ""
+    };
+  }
+}
+
+function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+function renderPokemon(pokemon) {
+  document.getElementById("pokemon-name").textContent = pokemon.name;
+  const img = document.getElementById("pokemon-img");
+  img.src = pokemon.image;
+  img.alt = pokemon.name;
+}
+
+async function generateUserPage() {
+  const users = await getRandomUsers();
+  const mainUser = users[0];
+  const friends = users.slice(1, 7);
+  const quote = await getKanyeQuote();
+  const pokemon = await getRandomPokemon();
+
+  renderMainUser(mainUser);
+  renderFriends(friends);
+  renderQuote(quote);
+  renderPokemon(pokemon);
 }
 
 generateUserPage();
