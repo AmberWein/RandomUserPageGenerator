@@ -31,7 +31,16 @@ function saveUser() {
   if (!currentUserData) return alert("No user to save");
 
   const savedUsers = JSON.parse(localStorage.getItem("savedUsers")) || [];
-  
+
+  // prevent duplicates: check if user already exists by uuid
+  const userUuid = currentUserData.mainUser.login.uuid;
+  const isDuplicate = savedUsers.some(
+    (user) => user.mainUser.login.uuid === userUuid);
+
+  if (isDuplicate) {
+    return alert("This user is already saved.");
+  }
+
   // add current user data and save back to localStorage
   savedUsers.push(currentUserData);
   localStorage.setItem("savedUsers", JSON.stringify(savedUsers));
@@ -43,7 +52,7 @@ function saveUser() {
 function renderSavedUsersDropdown() {
   const select = document.getElementById("saved-users-select");
   const savedUsers = JSON.parse(localStorage.getItem("savedUsers")) || [];
- 
+
   // clear existing options except placeholder
   select.options.length = 1;
 
@@ -70,12 +79,16 @@ function loadSavedUser(index) {
   renderAboutMe(user.aboutMe);
 }
 
-document.getElementById("generate-btn").addEventListener("click", generateUserPage);
+document
+  .getElementById("generate-btn")
+  .addEventListener("click", generateUserPage);
 document.getElementById("save-user-btn").addEventListener("click", saveUser);
-document.getElementById("saved-users-select").addEventListener("change", e => {
-  const index = e.target.value;
-  if (index !== "") loadSavedUser(index);
-});
+document
+  .getElementById("saved-users-select")
+  .addEventListener("change", (e) => {
+    const index = e.target.value;
+    if (index !== "") loadSavedUser(index);
+  });
 
 renderSavedUsersDropdown();
 
