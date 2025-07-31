@@ -75,17 +75,35 @@ function renderPokemon(pokemon) {
   img.alt = pokemon.name;
 }
 
+async function getAboutMeText() {
+  try {
+    const response = await fetch("https://baconipsum.com/api/?type=meat-and-filler&paras=1");
+    const data = await response.json(); // returns an array of strings
+    return data[0];
+  } catch (error) {
+    console.error("Error fetching about-me text:", error);
+    return "About me text unavailable.";
+  }
+}
+
+function renderAboutMe(text) {
+  const aboutMeElement = document.getElementById("about-text");
+  aboutMeElement.textContent = text;
+}
+
 async function generateUserPage() {
   const users = await getRandomUsers();
   const mainUser = users[0];
   const friends = users.slice(1, 7);
   const quote = await getKanyeQuote();
   const pokemon = await getRandomPokemon();
+  const aboutMe = await getAboutMeText();
 
   renderMainUser(mainUser);
   renderFriends(friends);
   renderQuote(quote);
   renderPokemon(pokemon);
+  renderAboutMe(aboutMe);
 }
 
 generateUserPage();
