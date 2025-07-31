@@ -1,24 +1,31 @@
 let currentUserData = null;
 
 async function generateUserPage() {
-  const users = await getRandomUsers();
-  const mainUser = users[0];
-  const friends = users.slice(1, 7);
-  const quote = await getKanyeQuote();
-  const pokemon = await getRandomPokemon();
-  const aboutMe = await getAboutMeText();
-  currentUserData = { mainUser, friends, quote, pokemon, aboutMe };
+  hideError();
 
-  // render all parts of the page
-  renderMainUser(mainUser);
-  renderFriends(friends);
-  renderQuote(quote);
-  renderPokemon(pokemon);
-  renderAboutMe(aboutMe);
+  try {
+    const users = await getRandomUsers();
+    const mainUser = users[0];
+    const friends = users.slice(1, 7);
+    const quote = await getKanyeQuote();
+    const pokemon = await getRandomPokemon();
+    const aboutMe = await getAboutMeText();
+
+    currentUserData = { mainUser, friends, quote, pokemon, aboutMe };
+
+    renderMainUser(mainUser);
+    renderFriends(friends);
+    renderQuote(quote);
+    renderPokemon(pokemon);
+    renderAboutMe(aboutMe);
+  } catch (error) {
+    showError(error.message || "Error loading user data.");
+    console.error(error);
+  }
 }
 
 function saveUser() {
-  if (!currentUserData) return alert("No user to save!");
+  if (!currentUserData) return alert("No user to save");
 
   const savedUsers = JSON.parse(localStorage.getItem("savedUsers")) || [];
   
@@ -45,7 +52,6 @@ function renderSavedUsersDropdown() {
   });
 }
 
-// טעינת משתמש שמור על פי הבחירה בתפריט
 function loadSavedUser(index) {
   const savedUsers = JSON.parse(localStorage.getItem("savedUsers")) || [];
   const user = savedUsers[index];
@@ -61,7 +67,6 @@ function loadSavedUser(index) {
   renderAboutMe(user.aboutMe);
 }
 
-// אירועים
 document.getElementById("generate-btn").addEventListener("click", generateUserPage);
 document.getElementById("save-user-btn").addEventListener("click", saveUser);
 document.getElementById("saved-users-select").addEventListener("change", e => {
@@ -69,8 +74,17 @@ document.getElementById("saved-users-select").addEventListener("change", e => {
   if (index !== "") loadSavedUser(index);
 });
 
-// טען רשימת משתמשים שמורים בהתחלה
 renderSavedUsersDropdown();
 
-// טען משתמש ראשי כברירת מחדל
 generateUserPage();
+
+function showError(message) {
+  const errorDiv = document.getElementById("error-message");
+  errorDiv.textContent = message;
+  errorDiv.style.display = "block";
+}
+
+function hideError() {
+  const errorDiv = document.getElementById("error-message");
+  errorDiv.style.display = "none";
+}

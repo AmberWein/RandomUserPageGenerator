@@ -1,55 +1,54 @@
+async function fetchJsonWithCheck(url, errorPrefix) {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`${errorPrefix}: ${response.status} ${response.statusText}`);
+  }
+  return response.json();
+}
+
 async function getRandomUsers() {
   try {
-    const response = await fetch("https://randomuser.me/api/?results=7");
-    const data = await response.json();
+    const data = await fetchJsonWithCheck("https://randomuser.me/api/?results=7", "Users API Error");
+    if (!data.results?.length) throw new Error("Users API returned empty result");
     return data.results;
   } catch (error) {
-    console.error("Error fetching random users:", error);
+    throw new Error(`Error fetching random users: ${error.message}`);
   }
 }
 
 async function getKanyeQuote() {
   try {
-    const response = await fetch("https://api.kanye.rest");
-    const data = await response.json();
+    const data = await fetchJsonWithCheck("https://api.kanye.rest", "Kanye API Error");
     return data.quote;
   } catch (error) {
-    console.error("Error fetching Kanye quote:", error);
-    return "Could not fetch quote.";
+    throw new Error(`Error fetching Kanye quote: ${error.message}`);
   }
 }
 
-async function getRandomPokemon() {
-  const randomId = Math.floor(Math.random() * 1025) + 1;
-  const url = `https://pokeapi.co/api/v2/pokemon/${randomId}`;
+function capitalize(str) {
+  if (typeof str !== 'string') return '';
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
 
+async function getRandomPokemon() {
   try {
-    const response = await fetch(url);
-    const data = await response.json();
+    const randomId = Math.floor(Math.random() * 1025) + 1;
+    const data = await fetchJsonWithCheck(`https://pokeapi.co/api/v2/pokemon/${randomId}`, "Pokemon API Error");
     return {
       name: capitalize(data.name),
       image: data.sprites.front_default
     };
   } catch (error) {
-    console.error("Error fetching Pokemon:", error);
-    return {
-      name: "Unknown",
-      image: ""
-    };
+    throw new Error(`Error fetching Pokemon: ${error.message}`);
   }
-}
-
-function capitalize(str) {
-  return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 async function getAboutMeText() {
   try {
-    const response = await fetch("https://baconipsum.com/api/?type=meat-and-filler&paras=1");
-    const data = await response.json(); // returns an array of strings
+    const data = await fetchJsonWithCheck("https://baconipsum.com/api/?type=meat-and-filler&paras=1", "AboutMe API Error");
+    if (!data.length) throw new Error("AboutMe API returned empty result");
     return data[0];
   } catch (error) {
-    console.error("Error fetching about-me text:", error);
-    return "About me text unavailable.";
+    throw new Error(`Error fetching AboutMe: ${error.message}`);
   }
 }
