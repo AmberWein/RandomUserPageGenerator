@@ -8,10 +8,14 @@
   </head>
 
   <body>
-    <div id="error-message" style="display:none; color: red; margin: 1em 0;"></div>
-    <div id="loading" style="display:none;">Loading...</div>
+    <header>
+      <h1>Random User Page Generator</h1>
+    </header>
 
-    <div id="main-container">
+    <div id="error-message" class="hidden error-message"></div>
+    <div id="loading" class="hidden loading-message">Loading...</div>
+
+    <main id="main-container">
       <section id="main-user"></section>
 
       <section id="friends">
@@ -36,14 +40,19 @@
       </section>
 
       <section id="controls">
-        <button id="generate-btn">Generate User</button>
-        <button id="save-user-btn">Save User</button>
-        <label for="saved-users-select">Load saved user:</label>
-        <select id="saved-users-select">
-          <option value="">Select user</option>
-        </select>
+        <div class="buttons">
+          <button id="generate-btn">Generate User</button>
+          <button id="save-user-btn">Save User</button>
+        </div>
+
+        <div class="load-user">
+          <label for="saved-users-select">Load saved user:</label>
+          <select id="saved-users-select">
+            <option value="">Select user</option>
+          </select>
+        </div>
       </section>
-    </div>
+    </main>
 
     <script src="apiManager.js"></script>
     <script src="renderer.js"></script>
