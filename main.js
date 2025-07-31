@@ -22,11 +22,12 @@ async function generateUserPage() {
   const mainUser = users[0];
   const friends = users.slice(1, 7);
 
+  const quote = await getKanyeQuote();
+
   renderMainUser(mainUser);
   renderFriends(friends);
+  renderQuote(quote);
 }
-
-generateUserPage();
 
 function renderFriends(friends) {
   const friendsList = document.getElementById("friends-list");
@@ -38,3 +39,21 @@ function renderFriends(friends) {
     friendsList.appendChild(li);
   });
 }
+
+async function getKanyeQuote() {
+  try {
+    const response = await fetch("https://api.kanye.rest");
+    const data = await response.json();
+    return data.quote;
+  } catch (error) {
+    console.error("Error fetching Kanye quote:", error);
+    return "Could not fetch quote.";
+  }
+}
+
+function renderQuote(quote) {
+  const quoteElement = document.getElementById("quote");
+  quoteElement.textContent = `"${quote}" - Kanye West`;
+}
+
+generateUserPage();
