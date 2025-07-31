@@ -20,7 +20,21 @@ function renderMainUser(user) {
 async function generateUserPage() {
   const users = await getRandomUsers();
   const mainUser = users[0];
+  const friends = users.slice(1, 7);
+
   renderMainUser(mainUser);
+  renderFriends(friends);
 }
 
 generateUserPage();
+
+function renderFriends(friends) {
+  const friendsList = document.getElementById("friends-list");
+  friendsList.innerHTML = "";
+
+  friends.forEach(friend => {
+    const li = document.createElement("li");
+    li.textContent = `${friend.name.first} ${friend.name.last}`;
+    friendsList.appendChild(li);
+  });
+}
