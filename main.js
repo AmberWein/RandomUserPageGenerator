@@ -2,6 +2,7 @@ let currentUserData = null;
 
 async function generateUserPage() {
   hideError();
+  showLoading();
 
   try {
     const users = await getRandomUsers();
@@ -21,6 +22,8 @@ async function generateUserPage() {
   } catch (error) {
     showError(error.message || "Error loading user data.");
     console.error(error);
+  } finally {
+    hideLoading();
   }
 }
 
@@ -80,11 +83,19 @@ generateUserPage();
 
 function showError(message) {
   const errorDiv = document.getElementById("error-message");
-  errorDiv.textContent = message;
+  errorDiv.innerHTML = `<strong>Oops!</strong> ${message}<br>Please try again.`;
   errorDiv.style.display = "block";
 }
 
 function hideError() {
   const errorDiv = document.getElementById("error-message");
   errorDiv.style.display = "none";
+}
+
+function showLoading() {
+  document.getElementById("loading").style.display = "block";
+}
+
+function hideLoading() {
+  document.getElementById("loading").style.display = "none";
 }
