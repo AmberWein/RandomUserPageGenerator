@@ -13,4 +13,7 @@ async function generateUserPage() {
   renderAboutMe(aboutMe);
 }
 
+document
+.getElementById("generate-btn") .addEventListener("click", generateUserPage);
+
 generateUserPage();
